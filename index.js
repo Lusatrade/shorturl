@@ -20,12 +20,14 @@ const validateUrlMiddleware = async (req, res, next) => {
   dns.lookup(req.body.url.replace(/^http(s):\/\//i, ""), (err, address) => {
     if (err) {
       console.log(err);
-      res.status(400).json({ error: "invalid url" });
+      res.status(400).json({ error: "Invalid URL" });
     } else {
-      req.body.url = req.body.url.match(/^http(s):\/\//i)
-        ? req.body.url
-        : "https://" + req.body.url;
-      next();
+      if(req.body.url.match(/^http(s):\/\//i)){
+        next()
+      }else{
+        res.status(400).json({ error: "Invalid URL" });
+      }
+     
     }
   });
 };
