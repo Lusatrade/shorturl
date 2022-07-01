@@ -17,6 +17,7 @@ app.use(express.json());
 app.use("/public", express.static(`${process.cwd()}/public`));
 
 const validateUrlMiddleware = (req, res, next) => {
+  logger(req)
   dns.lookup(req.body.url.replace(/^http(s):\/\//i, ""), (err, address) => {
     if (err) {
       console.log(err);
@@ -33,6 +34,15 @@ const validateUrlMiddleware = (req, res, next) => {
 };
 //Helpers
 const dataPath = __dirname + "/data.json";
+const logPath =  __dirname + "/log.txt";
+
+const logger = (req)=>{
+  let params = JSON.stringify(req.params)
+  let body = JSON.stringify(req.body)
+  let ts = new Date().toString()
+  let str = ` ${ts} ${req.method} ${req.path} ${params} ${body}\n`
+  fs.appendFile(logPath,str,(err)=>console.log(err))
+}
 
 const updateStorage = (obj) => {
   data.push(obj);
@@ -73,6 +83,11 @@ app.get("/api/admin", function (req, res) {
   res.json(data);
 });
 
+
+app.get("/api/logs", function (req, res) {
+  res.sendFile(logPath,(err)=>console.log(err));
+});
+
 // Your first API endpoint
 app.get("/api/hello", function (req, res) {
   res.json({ greeting: "hello API" });
@@ -92,6 +107,7 @@ app.post("/api/shorturl", validateUrlMiddleware, (req, res) => {
 });
 
 app.get("/api/shorturl/:short_url?", (req, res) => {
+  logger(req)
   const short_url = req.params.short_url;
   console.log("params = " + short_url);
   if (!short_url) {

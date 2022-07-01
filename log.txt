@@ -1,0 +1,2 @@
+ Fri Jul 01 2022 03:10:43 GMT+0200 (South Africa Standard Time) POST /api/shorturl {} {"url":"https://www.google.com"}
+ Fri Jul 01 2022 03:10:51 GMT+0200 (South Africa Standard Time) GET /api/shorturl/3 {"short_url":"3"} {}
