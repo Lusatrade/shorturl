@@ -5,6 +5,7 @@ const app = express();
 const bodyParser = require("body-parser");
 const fs = require("fs");
 const dns = require("node:dns");
+const uri = require('node-uri');
 let data = [];
 
 // Basic Configuration
@@ -18,16 +19,17 @@ app.use("/public", express.static(`${process.cwd()}/public`));
 
 const validateUrlMiddleware = (req, res, next) => {
   logger(req)
-  dns.lookup(req.body.url.replace(/^http(s):\/\//i, ""), (err, address) => {
+  const u = uri.checkURI(req.body.url)
+  if(!u.valid || (u.scheme!='https' && u.scheme!='http')){
+    res.status(200).json({ error: "Invalid URL" });
+  }
+
+  dns.lookup(u.host, (err, address) => {
     if (err) {
       console.log(err);
       res.status(200).json({ error: "Invalid URL" });
     } else {
-      if(req.body.url.match(/^http(s):\/\//i)){
-        next()
-      }else{
-        res.status(200).json({ error: "Invalid URL" });
-      }
+      next()
      
     }
   });
