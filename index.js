@@ -16,7 +16,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.json());
 app.use("/public", express.static(`${process.cwd()}/public`));
 
-const validateUrlMiddleware = async (req, res, next) => {
+const validateUrlMiddleware = (req, res, next) => {
   dns.lookup(req.body.url.replace(/^http(s):\/\//i, ""), (err, address) => {
     if (err) {
       console.log(err);
