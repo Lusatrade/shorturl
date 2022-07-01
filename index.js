@@ -20,12 +20,12 @@ const validateUrlMiddleware = async (req, res, next) => {
   dns.lookup(req.body.url.replace(/^http(s):\/\//i, ""), (err, address) => {
     if (err) {
       console.log(err);
-      res.status(400).json({ error: "Invalid URL" });
+      res.status(200).json({ error: "Invalid URL" });
     } else {
       if(req.body.url.match(/^http(s):\/\//i)){
         next()
       }else{
-        res.status(400).json({ error: "Invalid URL" });
+        res.status(200).json({ error: "Invalid URL" });
       }
      
     }
@@ -91,11 +91,11 @@ app.get("/api/shorturl/:short_url?", (req, res) => {
   const short_url = req.params.short_url;
   console.log("params = " + short_url);
   if (!short_url) {
-    res.status(400).json({ error: "Invalid url" });
+    res.status(200).json({ error: "Invalid url" });
   } else {
     let obj = findLongUrl(short_url);
     if (!obj) {
-      res.status(400).json({ error: "Invalid url" });
+      res.status(200).json({ error: "Invalid url" });
     } else {
       res.redirect(301, obj.original_url);
     }
